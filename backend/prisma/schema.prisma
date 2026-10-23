@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int             @id @default(autoincrement())
+  email        String          @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime        @default(now())
+  resumes      ResumeVersion[]
+}
+
+model ResumeVersion {
+  id                Int      @id @default(autoincrement())
+  userId            Int
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobTitle          String?
+  company           String?
+  originalResume    String
+  jobDescription    String
+  tailoredResume    String
+  coverLetter       String
+  matchScoreBefore  Float
+  matchScoreAfter   Float
+  matchedKeywords   String   // JSON-encoded array
+  missingKeywords   String   // JSON-encoded array
+  createdAt         DateTime @default(now())
+}
